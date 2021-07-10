@@ -1,4 +1,11 @@
-node {
+
+  def remote = [:]
+  remote.name = 'deployment'
+  remote.host = '172.31.8.252'
+  remote.user = 'centos'
+  remote.password = 'Rnstech@123'
+  remote.allowAnyHosts = true
+  node {
     def mvnHome
     stage('Preparation') {
         git credentialsId: 'github_credentials', url: 'https://github.com/gonesai4/jenkins-proj-repo.git'
@@ -17,5 +24,11 @@ node {
     stage('Results') {
         junit 'target/surefire-reports/*.xml'
         archiveArtifacts 'target/*.war'
+    }
+    stage('deployment-to-staging') {
+        sh 'mv target/*.war target/newapp.war'
+        sshCommand remote: remote, command: "sh /opt/tomcat8/bin/shutdown.sh"
+        sshPut remote: remote, from: 'target/newapp.war', into: '/opt/tomcat8/webapps/'
+        sshCommand remote: remote, command: "sh /opt/tomcat8/bin/startup.sh"   
     }
 }
