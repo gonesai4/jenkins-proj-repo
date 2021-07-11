@@ -10,8 +10,8 @@ RUN java -version
 
 WORKDIR /opt
 RUN curl -O http://mirrors.estointernet.in/apache/tomcat/tomcat-8/v8.5.69/bin/apache-tomcat-8.5.69.tar.gz
-RUN tar xzvf apache-tomcat-8.5.50.tar.gz -C /opt/
-RUN cp -R /opt/apache-tomcat-8.5.50/ /opt/tomcat
+RUN tar xzvf apache-tomcat-8.5.69.tar.gz -C /opt/
+RUN cp -R /opt/apache-tomcat-8.5.69/ /opt/tomcat
 
 WORKDIR /opt/tomcat/webapps
 COPY target/*.war /opt/tomcat/webapps/webapp.war
