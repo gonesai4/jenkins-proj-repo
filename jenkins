@@ -76,9 +76,17 @@ pipeline {
              steps{
     	        withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'dockerPassword', usernameVariable: 'dockerUser')]) {
     		sh "docker login -u ${dockerUser} -p ${dockerPassword}"
-	}
+	        }
         	sh "docker push gonesai4/webapp"
-    }
-    }
+             }
+        }
+	stage('Deploy to Staging') {
+	     steps{
+	          //Deploy to K8s Cluster 
+                  echo "Deploy to Staging Server"
+	          sshCommand remote: kops, command: "cd jenkins-proj-repo; git pull"
+	          sshCommand remote: kops, command: "kubectl apply -f jenkins-proj-repo/k8s-code/staging/app/."
+	     }		    
+        }
     }
 }
