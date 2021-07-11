@@ -11,4 +11,3 @@
    roles:
       - geerlingguy.java
       - ansible-role-sonarqube
-   #-  debug: msg="stdout={{ result }}"
