@@ -85,8 +85,32 @@ pipeline {
 	          //Deploy to K8s Cluster 
                   echo "Deploy to Staging Server"
 	          sshCommand remote: kops, command: "cd jenkins-proj-repo; git pull"
+		  sshCommand remote: kops, command: "kubectl delete -f jenkins-proj-repo/k8s-code/staging/app/deploy-webapp.yml"
 	          sshCommand remote: kops, command: "kubectl apply -f jenkins-proj-repo/k8s-code/staging/app/."
 	     }		    
+        }    
+	stage ('Integration-Test') {
+	     steps {
+                  echo "Run Integration Test Cases"
+                  sh "mvn clean verify"
+             }
         }
+	stage ('approve') {
+	     steps {
+		   echo "Approval State"
+                   timeout(time: 7, unit: 'DAYS') {                    
+		   input message: 'Do you want to deploy?', submitter: 'admin'
+	           }
+	     }
+         }
+	 stage ('Prod-Deploy') {
+	     steps{
+                  echo "Deploy to Production"
+	          //Deploy to Prod K8s Cluster
+	          sshCommand remote: kops, command: "cd jenkins-proj-repo; git pull"
+		  sshCommand remote: kops, command: "kubectl delete -f jenkins-proj-repo/k8s-code/staging/app/deploy-webapp.yml"
+	          sshCommand remote: kops, command: "kubectl apply -f jenkins-proj-repo/k8s-code/prod/app/."
+	     }
+	 }
     }
 }
