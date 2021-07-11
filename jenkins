@@ -10,7 +10,7 @@ pipeline {
         stage('Prepare-workspace') {
             steps {
                 // Get some code from a GitHub repository
-                git 'https://github.com/gonesai4/jenkins-proj-repo.git'
+                git credentialsId: 'github_credentials', url: 'https://github.com/gonesai4/jenkins-proj-repo.git'
 
             }
         }
