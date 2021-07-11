@@ -57,5 +57,15 @@ pipeline {
               }
            }
         }
+	stage('Build Code') {
+          steps{
+              sh "mvn clean package"  
+          }
+          post{
+              success{
+                  archiveArtifacts '**/*.war'
+              }
+          }
+      }
     }
 }
